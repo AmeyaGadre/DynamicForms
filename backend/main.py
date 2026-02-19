@@ -24,7 +24,12 @@ app.add_middleware(
 )
 
 
+@app.get("/health")
+def health_check():
+    return {"status": "healthy"}
+
 @app.post("/api/signup", response_model=schemas.User)
+
 def signup(user: schemas.UserCreate, db: Session = Depends(database.get_db)):
     db_user = db.query(models.User).filter(models.User.mobile_number == user.mobile_number).first()
     if db_user:
