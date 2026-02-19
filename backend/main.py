@@ -13,11 +13,16 @@ app = FastAPI(title="Dynamic Forms Backend")
 # CORS configuration
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # In production, specify exact origins
+    allow_origins=[
+        "http://localhost:5173",
+        "https://dynamic-forms-ameyag-b7cd6.web.app",
+        "https://dynamic-forms-ameyag-b7cd6.firebaseapp.com"
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
 
 @app.post("/api/signup", response_model=schemas.User)
 def signup(user: schemas.UserCreate, db: Session = Depends(database.get_db)):
