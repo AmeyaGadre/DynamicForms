@@ -5,8 +5,9 @@ from typing import List
 import models, schemas, auth, database
 from database import engine
 
-# Create tables
-models.Base.metadata.create_all(bind=engine)
+# Tables are created via init_db.py manual step
+# models.Base.metadata.create_all(bind=engine)
+
 
 app = FastAPI(title="Dynamic Forms Backend")
 
