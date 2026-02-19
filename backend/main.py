@@ -1,8 +1,11 @@
-from fastapi import FastAPI, Depends, HTTPException, status
+from fastapi import FastAPI, Depends, HTTPException, status, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
+import traceback
+import logging
 from sqlalchemy.orm import Session
 from typing import List
-import models, schemas, auth, database
+import models, schemas, auth, database, os
 from database import engine
 
 # Tables are created via init_db.py manual step
@@ -14,15 +17,24 @@ app = FastAPI(title="Dynamic Forms Backend")
 # CORS configuration
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:5173",
-        "https://dynamic-forms-ameyag-b7cd6.web.app",
-        "https://dynamic-forms-ameyag-b7cd6.firebaseapp.com"
-    ],
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Global Error Logger
+@app.exception_handler(Exception)
+async def global_exception_handler(request: Request, exc: Exception):
+    error_msg = traceback.format_exc()
+    logging.error(f"GLOBAL ERROR: {error_msg}")
+    return JSONResponse(
+        status_code=500,
+        content={
+            "detail": str(exc),
+            "traceback": error_msg if os.getenv("DEBUG") else "Internal Server Error"
+        }
+    )
 
 
 @app.get("/health")
