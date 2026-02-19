@@ -20,7 +20,14 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="api/login")
 
 def verify_password(plain_password, hashed_password):
-    return pwd_context.verify(plain_password, hashed_password)
+    try:
+        if not hashed_password or len(hashed_password) < 10:
+            return False
+        return pwd_context.verify(plain_password, hashed_password)
+    except ValueError:
+        # This happens if the password in DB is plaintext or malformed
+        return False
+
 
 def get_password_hash(password):
     return pwd_context.hash(password)

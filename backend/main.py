@@ -41,7 +41,15 @@ async def global_exception_handler(request: Request, exc: Exception):
 def health_check():
     return {"status": "healthy"}
 
+@app.get("/api/system/reset-db")
+def reset_database():
+    # Dangerous: Only for deployment debugging
+    models.Base.metadata.drop_all(bind=engine)
+    models.Base.metadata.create_all(bind=engine)
+    return {"message": "Database reset successfully. All tables recreated."}
+
 @app.post("/api/signup", response_model=schemas.User)
+
 
 def signup(user: schemas.UserCreate, db: Session = Depends(database.get_db)):
     db_user = db.query(models.User).filter(models.User.mobile_number == user.mobile_number).first()
