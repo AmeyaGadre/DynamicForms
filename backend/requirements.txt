@@ -5,7 +5,7 @@ sqlalchemy
 psycopg2-binary
 pydantic
 python-jose[cryptography]
-passlib[bcrypt]
-bcrypt
+passlib
+bcrypt==3.1.7
 python-multipart
 python-dotenv
